@@ -1,59 +1,13 @@
 # Thesis Survival Experiments
 
-This repository provides a modular PyTorch framework for training **DeepSurv**, **DeepHit**, and **multimodal survival models** on multiple datasets (Synthetic, SUPPORT2, MNB, MIMIC-Eye).  
-Experiments are fully configuration-driven through YAML files.
+This repository contains a modular PyTorch framework for training and evaluating neural survival models on multiple real-world and synthetic datasets.
+All experiments are fully configuration-driven using YAML files, enabling reproducible research.
+
+Supported datasets: Synthetic (DeepHit), SUPPORT2, MNB (financial risk), MIMIC-Eye (tabular & multimodal)
 
 ---
 
-## 0. Setup
-
----
-
-## 1. Project Structure
-
-alexa_thesis/
-│
-├── train.py                     # Main experiment runner
-├── README.md
-│
-├── configs/                     # YAML experiment configurations
-│   ├── support2_deepsurv.yaml
-│   ├── synthetic_deephit.yaml
-│   ├── mnb_binary_deepsurv.yaml
-│   ├── mimiceye_tabular_deepsurv.yaml
-│   └── mimiceye_multimodal_deepsurv.yaml
-│
-├── datasets/                    # Dataset loaders
-│   ├── base.py
-│   ├── synthetic.py
-│   ├── support2.py
-│   ├── mnb.py
-│   ├── mimic_eye_tabular.py
-│   ├── mimic_eye_multimodal.py
-│   └── __init__.py
-│
-├── models/                      # DeepSurv / DeepHit / multimodal models
-│   ├── mlp.py
-│   ├── deepcox.py
-│   ├── deephit.py
-│   ├── multimodal.py
-│   └── __init__.py
-│
-├── trainers/                    # Training logic for Cox & DeepHit
-│   ├── supervised_trainer.py
-│   └── deephit_trainer.py
-│
-├── losses/                      # Loss implementations
-│   ├── cox.py
-│   └── deephit.py
-│
-└── metrics/                     # Evaluation metrics
-    ├── survival_metrics.py      # C-index
-    └── classification_metrics.py# PR-AUC, F1-score from risk scores
-
----
-
-## 2. Data Structure
+## 1. Data Structure
 
 All datasets must follow the directory structure below:
 
@@ -80,16 +34,18 @@ data/
       val.csv
       test.csv
       category_mappings.json
-      mimic_eye_survival_admissions.csv
 
     multimodal/
       train.csv
       val.csv
       test.csv
-      multimodal_category_mappings.json
-      mimic_eye_multimodal_admissions.csv
+      multimodal_category_mappings.jso
 
-Each dataset loader automatically infers feature columns while respecting dataset-specific time/event column names.
+Each dataset loader:
+
+ - infers feature columns automatically
+ - respects dataset-specific time and event definitions
+ - handles censoring consistently across models
 
 ---
 
@@ -105,40 +61,45 @@ python train.py --config configs/<config_name>.yaml
 
 ```
 
-## 4. Metrics
+## 4. Models Implemented
 
-Each trainer computes and logs **survival** and **classification** metrics.
+### DeepSurv
 
-### Survival Metrics
-- **Concordance Index (C-index)**  
-  Measures how well the model ranks patients by risk (standard survival evaluation).
+Neural Cox proportional hazards model:
 
-### Classification Metrics
-Derived from model risk scores (`log_risk` for Cox, `-expected_time` for DeepHit):
+ - MLP backbone for tabular features
+ - Outputs a continuous risk score
+ - Optimized via partial log-likelihood
 
-- **PR-AUC** (Precision–Recall Area Under Curve)
-- **F1-score**
-- **Decision threshold** used for F1 (default: median predicted risk)
+### DeepHit
 
-These metrics complement survivial ranking metrics and provide a binary "event vs. no event" interpretation.
+Discrete-time survival model:
 
----
+- Supports single-event and competing risks
+- Learns event-time distributions over time bins
+- Optimized via negative log-likelihood
 
-## 5. Model Families Supported
+### Multimodal Cox
 
-### 1. DeepSurv (Cox Proportional Hazards Neural Network)
-- MLP backbone for tabular data  
-- Optional multimodal fusion with ResNet18 for image inputs (MIMIC-Eye)
-
-### 2. DeepHit
-- Supports single-event and competing-risks modeling  
-- Uses discrete time bins (`TimeDiscretizer`)  
-- Loss: negative log-likelihood over time bins
-
-### 3. Multimodal Cox
-- Tabular branch: MLP  
-- Image branch: ResNet18  
+- Tabular branch: MLP
+- Image branch: ResNet-18
 - Late-fusion Cox head for risk prediction
+
+## 5. Evaluation Metrics
+
+Each trainer computes and logs and **survival** metrics.
+
+### Primary Metric
+- **Concordance Index (C-index)**  
+ Measures how well predicted risks rank individuals by event time.
+
+### Additional Metrics
+
+ - **Time-dependent AUC**
+ - **Integrated AUC (iAUC)**
+ - **Integrated Brier Score (IBS))**
+
+These metrics complement survivial ranking metrics and and used for auxiliary analysis, not model selection.
 
 ---
 
@@ -146,11 +107,12 @@ These metrics complement survivial ranking metrics and provide a binary "event v
 
 Each config file specifies:
 
- - dataset settings
+ - dataset and preprocessing options
  - model architecture
  - optimizer hyperparameters
  - training schedule
- - optional SSL flags (for later extension) ------------------------------------------------------------
+ - evaluation horizon and metrics
+ - optional semi-supervised flags
 
 Configs enable fully reproducible experiments without modifying code.
 
@@ -160,7 +122,7 @@ Configs enable fully reproducible experiments without modifying code.
 
 During training:
 
- - Best validation model is tracked via C-index
+ - Best model is selected based on validation C-index
  - Saved to:
     `runs/<experiment_name>_best.pt`
 Test-set metrics are printed after training.
