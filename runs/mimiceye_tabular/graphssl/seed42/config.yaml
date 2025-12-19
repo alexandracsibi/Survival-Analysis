@@ -1,0 +1,51 @@
+experiment_name: mimiceye_tabular_deepsurv_graphssl_seed42
+dataset:
+  name: mimiceye_tabular
+  base_dir: data/mimic-eye
+  time_col: duration_days
+  event_col: event
+  feature_cols: null
+  loader:
+    train_batch_size: 256
+    val_batch_size: 512
+    shuffle_train: true
+    num_workers: 4
+    pin_memory: true
+model:
+  type: deepsurv
+  backbone: mlp
+  mlp_hidden_dims:
+  - 128
+  - 64
+  mlp_dropout: 0.1
+  use_cat_embeddings: true
+  cat_feature_names:
+  - admission_type_id
+  - admission_location_id
+  - race_id
+  category_mapping_json: data/mimic-eye/tabular/category_mappings.json
+train:
+  optimizer: adam
+  lr: 0.001
+  weight_decay: 0.0001
+  epochs: 100
+  device: cuda
+  seed: 42
+  early_stopping_patience: 20
+  early_stopping_min_delta: 0.0001
+  graph_ssl:
+    enabled: true
+    k: 10
+    lambda: 0.1
+    max_neighbors: 5
+    unlabeled_fraction: 0.5
+  ssl:
+    enabled: false
+metrics:
+  horizon: 15.0
+  horizons:
+  - 7.0
+  - 15.0
+  - 30.0
+  - 45.0
+  event_of_interest: 1

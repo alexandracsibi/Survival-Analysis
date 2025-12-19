@@ -1,0 +1,11 @@
+{
+  "seed": 47,
+  "best_epoch": 14,
+  "val_loss": 5.14811130358918,
+  "val_c_index": 0.7767017165810383,
+  "val_td_auc": 0.8327722948029661,
+  "val_iauc": 0.8374181550532679,
+  "val_ibs": 0.16420175862220035,
+  "val_horizon": 365.0,
+  "val_event_of_interest": 1.0
+}

@@ -1,0 +1,38 @@
+experiment_name: synthetic_deephit_quantile
+
+dataset:
+  name: synthetic
+  base_dir: data/synthetic
+  feature_cols: null
+  n_times: 100
+  discretization: quantile
+  loader:
+    train_batch_size: 512
+    val_batch_size: 1024
+    shuffle_train: true
+    num_workers: 4
+    pin_memory: true
+
+model:
+  type: deephit
+  mlp_hidden_dims: [256, 256]
+  mlp_dropout: 0.3
+  n_events: 2             # can also infer from data, but explicit is okay
+
+train:
+  optimizer: adam
+  lr: 1.0e-3
+  weight_decay: 0.0
+  epochs: 200
+  device: cuda
+  seed: 42
+  early_stopping_patience: 30
+  early_stopping_min_delta: 1.0e-4
+
+  deephit_alpha: 1.0   # weight for NLL term
+  deephit_beta: 1.0    # weight for ranking term
+
+metrics:
+  horizon: 7.0
+  horizons: [3, 5, 7, 10, 14]
+  event_of_interest: 1

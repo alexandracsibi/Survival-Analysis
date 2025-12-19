@@ -1,0 +1,40 @@
+experiment_name: mnb_comprisk_deephit_seed43
+dataset:
+  name: mnb_comprisk
+  base_dir: data/MNB
+  feature_cols: null
+  n_times: 50
+  discretization: quantile
+  loader:
+    train_batch_size: 512
+    val_batch_size: 1024
+    shuffle_train: true
+    num_workers: 4
+    pin_memory: true
+model:
+  type: deephit
+  mlp_hidden_dims:
+  - 256
+  - 256
+  mlp_dropout: 0.3
+  n_events: 2
+train:
+  optimizer: adam
+  lr: 0.001
+  weight_decay: 1.0e-05
+  epochs: 100
+  device: cuda
+  seed: 43
+  early_stopping_patience: 20
+  early_stopping_min_delta: 0.0001
+  deephit_alpha: 1.0
+  deephit_beta: 0.2
+metrics:
+  horizon: 180.0
+  horizons:
+  - 30.0
+  - 90.0
+  - 180.0
+  - 365.0
+  - 540.0
+  event_of_interest: 1

@@ -1,0 +1,40 @@
+experiment_name: synthetic_deephit_seed44
+dataset:
+  name: synthetic
+  base_dir: data/synthetic
+  feature_cols: null
+  n_times: 50
+  discretization: linear
+  loader:
+    train_batch_size: 512
+    val_batch_size: 1024
+    shuffle_train: true
+    num_workers: 4
+    pin_memory: true
+model:
+  type: deephit
+  mlp_hidden_dims:
+  - 128
+  - 64
+  mlp_dropout: 0.1
+  n_events: 2
+train:
+  optimizer: adam
+  lr: 0.001
+  weight_decay: 0.0
+  epochs: 200
+  device: cuda
+  seed: 44
+  early_stopping_patience: 30
+  early_stopping_min_delta: 0.0001
+  deephit_alpha: 1.0
+  deephit_beta: 1.0
+metrics:
+  horizon: 7.0
+  horizons:
+  - 3
+  - 5
+  - 7
+  - 10
+  - 14
+  event_of_interest: 1

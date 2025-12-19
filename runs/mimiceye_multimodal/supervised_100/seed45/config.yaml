@@ -1,0 +1,46 @@
+experiment_name: mimiceye_multimodal_deepsurv_seed45
+dataset:
+  name: mimiceye_multimodal
+  base_dir: data/mimic-eye
+  feature_cols: null
+  image_root: null
+  img_size: 224
+  loader:
+    train_batch_size: 32
+    val_batch_size: 64
+    shuffle_train: true
+    num_workers: 4
+    pin_memory: true
+model:
+  type: deepsurv
+  img_out_dim: 128
+  tab_mlp_hidden_dims:
+  - 64
+  - 32
+  tab_mlp_dropout: 0.1
+  pretrained: true
+  weights_path: weights/resnet18-imagenet.pth
+  freeze_cnn: true
+  use_cat_embeddings: true
+  cat_feature_names:
+  - admission_type_id
+  - admission_location_id
+  - race_id
+  category_mapping_json: data/mimic-eye/multimodal/category_mappings.json
+train:
+  optimizer: adam
+  lr: 0.0001
+  weight_decay: 1.0e-05
+  epochs: 50
+  device: cuda
+  seed: 45
+  early_stopping_patience: 10
+  early_stopping_min_delta: 0.0001
+metrics:
+  horizon: 15.0
+  horizons:
+  - 7.0
+  - 15.0
+  - 30.0
+  - 45.0
+  event_of_interest: 1

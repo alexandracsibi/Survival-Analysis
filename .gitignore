@@ -1,0 +1,9 @@
+# --- do not push to GitHub ---
+logs/
+data/
+raw_data/
+containers/
+
+# --- python cache ---
+__pycache__/
+*.pyc

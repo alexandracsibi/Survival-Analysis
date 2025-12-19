@@ -1,0 +1,10 @@
+{
+  "seed": 45,
+  "test_loss": 4.354648525661893,
+  "test_c_index": 0.7103427976995715,
+  "test_td_auc": 0.7496644381676618,
+  "test_iauc": 0.7476411334269322,
+  "test_ibs": 0.1646912422593019,
+  "test_horizon": 7.0,
+  "test_event_of_interest": 1.0
+}
