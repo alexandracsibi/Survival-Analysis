@@ -11,17 +11,17 @@ Supported datasets: Synthetic (DeepHit), SUPPORT2, MNB (financial risk), MIMIC-E
 
 All datasets must follow the directory structure below:
 
-data/
-  synthetic/
-    train.csv
-    val.csv
-    test.csv
-    synthetic_true.csv
+  data/
+    synthetic/
+      train.csv
+      val.csv
+      test.csv
+      synthetic_true.csv
 
-  support2/
-    train.csv
-    val.csv
-    test.csv
+    support2/
+      train.csv
+      val.csv
+      test.csv
 
     MNB/
       train.csv
@@ -34,12 +34,11 @@ data/
         val.csv
         test.csv
         category_mappings.json
-
-    multimodal/
-      train.csv
-      val.csv
-      test.csv
-      multimodal_category_mappings.jso
+      multimodal/
+        train.csv
+        val.csv
+        test.csv
+        multimodal_category_mappings.jso
 
 Each dataset loader:
 
