@@ -11,7 +11,6 @@ Supported datasets: Synthetic (DeepHit), SUPPORT2, MNB (financial risk), MIMIC-E
 
 All datasets must follow the directory structure below:
 
-  data/
     synthetic/
       train.csv
       val.csv
