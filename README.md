@@ -23,17 +23,17 @@ data/
     val.csv
     test.csv
 
-  MNB/
-    train.csv
-    val.csv
-    test.csv
-
-  mimic-eye/
-    tabular/
+    MNB/
       train.csv
       val.csv
       test.csv
-      category_mappings.json
+
+    mimic-eye/
+      tabular/
+        train.csv
+        val.csv
+        test.csv
+        category_mappings.json
 
     multimodal/
       train.csv
